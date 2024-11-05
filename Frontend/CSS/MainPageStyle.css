@@ -1,0 +1,317 @@
+/*
+Name:           MainPageStyle.css
+Description:    Style file for the MainPage.html
+Author:         Xiaoyue Zhang
+Version:        v0.3.202411021
+*/
+
+/* default initial*/
+*{
+    box-sizing: border-box;    /* include frame and padding into height and width*/
+}
+html, body {
+    margin: 0;                 /* clear default margin */
+    height: 100%;
+    min-width: 960px;
+    min-height: 540px; 
+}
+
+/*style of Global window */
+.main_container {
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+/*style of course panel (container of setting, adding, removing course buttons) */
+.course_panel{
+    position: relative;
+
+    flex: 1.5;
+    min-width: 180px;
+
+    left: 0;
+    top: 0;
+
+    height: 100%;
+
+    background-color: #bfbfbf;
+}
+
+/*style of report panel (container of chart, chart type, title) */
+.report_panel{
+    position: relative;
+
+    flex: 8.5;
+    min-width: 816px;
+
+    right: 0;
+    top: 0;
+
+    height: 100%;
+}
+
+/*container for setting buttons, for general adjustment*/
+.setting_btn_container{
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 3vw;
+    min-height: 28.8px;
+
+    display: flex;
+    justify-content: flex-end;
+    padding: 0.5vw;
+    gap: 0.5vw;   
+
+    background-color: #919191;
+}
+/*style of setting buttons (setting, adding, removing course buttons)*/
+.setting_btn{
+    background-color: #ffffff;
+
+    width: 2vw;
+    min-width: 19.2px; 
+    height: 2vw;
+    min-height: 19.2px;
+
+    border: none;
+    border-radius: 0.75vw;
+
+    font-size: 1.5vw;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+/*container for course buttons and scroll, for general adjustment*/
+.course_btn_container{
+    position: absolute;
+
+    display: flex;
+    overflow-y: auto;
+    direction: ltr;
+    flex-direction: column;
+
+    right: 0;
+    bottom: 0;
+
+    width: 100%;
+    height: calc(100% - 3vw);
+    max-height: calc(100% - 28.8px);
+
+    background-color: #00000000;
+}
+
+/*button for selecting course*/
+.course_btn{
+
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    right: 0px;
+
+    width: 100%;
+    height: 5%;
+    min-height: 50px;
+
+    padding-left: 5%;
+    border: none;
+    border-radius: 5px;
+
+    font-size: 90%;
+    font-weight: bold;
+    color:#000000;
+
+    background-color: #bfbfbf;
+
+    cursor: pointer;
+}
+.course_btn:hover{
+    background-color: #999999;
+}
+.course_btn:active{
+    background-color: #7e7e7e;
+}
+
+/*color to mark selected course*/
+.course_btn_color{
+    aspect-ratio: 1 / 1;
+    height: 50%;
+    border-radius: 100%;
+
+    background-color: hwb(0 20% 55%);
+
+    font-size: 0px;
+    color: #00000000;
+}
+
+/*Title text of analysis report*/
+.report_title{
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    width: 100%;
+    height: 3vw;
+    min-height: 28.8px;
+
+    margin-top: 0px;
+    padding-top: 0.3vw;
+    padding-left: 1vw;
+    
+    color: #000000;
+    font-size: 1.5vw;
+    font-weight: bold;
+
+    background-color: #bfbfbf;
+}
+
+/*container for chart types buttons*/
+.chart_type_btn_container{
+    position: absolute;
+
+    top: 0;
+    left: 20px;
+
+    height: 3.5vw;
+    min-height: 33.6px;
+    width: 80vw;
+    min-width: 768px;
+
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+}
+
+/*button of chart types*/
+.chart_type_btn{
+    
+    bottom: 0px;
+    right: 10px;
+
+    width: 150px;
+    height: 2vw;
+    min-height: 24px;
+
+    padding-top: 0px;
+
+    border: none;
+    border-radius: 10px;
+
+    cursor: pointer;
+    background-color: #cfcfcf;
+}
+.chart_type_btn:hover{
+    background-color: #e7e7e7;
+}
+.chart_type_btn:active{
+    background-color: #ffffff;
+}
+.clicked_chart_type_btn{
+    bottom: 0px;
+    right: 10px;
+
+    width: 150px;
+    height: 2vw;
+    min-height: 24px;
+
+    padding-top: 0px;
+
+    border: none;
+    border-radius: 10px;
+
+    background-color: #ffffff;
+}
+
+/*panel for chart relate elements*/
+.chart_panel{
+    position: absolute;
+    display: flex;
+
+    top: 3vw;
+    bottom: 0;
+
+    width: 100%;
+    height: calc(100% - 3vw);
+    max-height: calc(100% - 28.8px);
+
+    align-items: center;
+    justify-content: center;
+
+    background-color:#ffffff;
+}
+
+.canvas_container{
+    position: relative;
+    
+    height: 92%;
+    width: 80%;
+
+    background-color:#eeeeee;
+}
+
+/*canvas for printing chart*/
+.chart_canvas{
+    position: relative;
+    
+    height: 100%;
+    width: 100%;
+
+    padding-top: 30px;
+    padding-right: 40px;
+
+    background-color:#f3f3f3;
+}
+
+/*container for chart relate values*/
+.chart_info_container{
+    position: relative;
+
+    display: flex;
+
+    height: 92%;
+    width: 15%;
+    min-width: 153.6px;
+
+    flex-direction: column;
+    gap: 2%;
+    align-items: center; 
+
+    background-color: #00000000;
+}
+
+/*chart relate values*/
+.chart_info{
+    position: relative;
+    display: flex;
+    
+    height: 5%;
+    min-height: 30px;
+    width: 90%;
+
+    font-weight: bold;
+    font-size: 15px;
+
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 10px;
+
+    background-color: #dddddd;
+}
+
+/*Small Window Adaptation*/
+@media(max-width: 960px){
+    .setting_btn_container{ padding: 4.8px; gap: 4.8px; }
+    .setting_btn{ border-radius: 7.2px; font-size: 14.4px; }
+    .report_title{ padding-top: 2.9px; padding-left: 9.6px; font-size: 14px;}
+    .chart_panel{ top: 28.8px; }
+}
+@media(max-height: 540px){
+
+}
