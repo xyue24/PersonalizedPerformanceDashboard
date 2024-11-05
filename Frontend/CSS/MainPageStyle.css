@@ -262,6 +262,9 @@ html, body {
     height: 100%;
     width: 100%;
 
+    padding-top: 30px;
+    padding-right: 40px;
+
     background-color:#f3f3f3;
 }
 

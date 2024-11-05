@@ -2,7 +2,7 @@
 Name:           MainPageScript.js
 Description:    Script file for the MainPage.html
 Author:         Xiaoyue Zhang
-Version:        v0.3.202411041
+Version:        v0.6.202411051
 */
 
 // #region Instance Initial
@@ -26,6 +26,7 @@ let chart_type = 'time_chart';
 
 // chart config initial
 let curr_chart;
+let chart_category = [];
 let chart_data = [];
 const time_chart_config = {     // config of time chart
     type: 'scatter',
@@ -43,6 +44,9 @@ const time_chart_config = {     // config of time chart
                 },
                 grid: {
                     display: true
+                },
+                ticks: {
+                    stepSize: 1
                 }
             },
             y: {
@@ -54,10 +58,83 @@ const time_chart_config = {     // config of time chart
                 },
                 grid: {
                     display: true
+                },
+                ticks: {
+                    stepSize: 1
                 }
             }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
         }
-
+    }
+}
+const tech_chart_config = {     // config of tech chart
+    type: 'bar',
+    data: chart_data,
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        scales:{
+            x: {
+                beginAtZero: true,
+                grid: {
+                    display: true
+                },
+                title: {
+                    display: true,
+                    text: 'Number'  
+                },
+                ticks: {
+                    stepSize: 1
+                },
+                stacked: true
+            },
+            y: {
+                stacked: true
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
+    }
+}
+const learn_chart_config = {    // config of learn chart
+    type: 'bar',
+    data: chart_data,
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        indexAxis: 'y',
+        scales:{
+            x: {
+                beginAtZero: true,
+                grid: {
+                    display: true
+                },
+                title: {
+                    display: true,
+                    text: 'Score'  
+                },
+                ticks: {
+                    stepSize: 1
+                },
+                stacked: true
+            },
+            y: {
+                stacked: true
+            }
+        },
+        plugins: {
+            legend: {
+                display: false
+            }
+        }
     }
 }
 // #endregion
@@ -162,7 +239,7 @@ function ClickChartBtn(type){
     // update chart
     const data_send = {
         type: chart_type,
-        course_list: [selected_courses_list]
+        course_list: selected_courses_list
     };
     GetChartData(JSON.stringify(data_send));
 }
@@ -260,17 +337,20 @@ function GetChartData(data_string){
     .then(response => response.json())  // get response from server
     .then(data => {     // get success
         for(let item in data){
-            course_data_dict.set(item, data[item]);
+            if(item == 'category'){ chart_category = data[item]; }
+            else { course_data_dict.set(item, data[item]); }
         }
         UpdateChart();
     })
     .catch(error => {   // get fail
-        console.error('Get Chart Error: ', error);
+        console.error('GetChartError: ', error);
+        UpdateChart();
     });
 }
 
 // update chart by data in dict
 function UpdateChart(){
+
     if(chart_type == 'time_chart'){
         DisplayTimeChart();
     }
@@ -307,8 +387,10 @@ function DisplayTimeChart(){
     if(curr_chart){ curr_chart.destroy(); }
     chart_data = [];
 
+    let item_data = {}
+
     for(let item of course_data_dict){
-        let item_data = {
+        item_data = {
             label: item[0],
             data: item[1],
             backgroundColor: HwbToRgb(document.getElementById(item[0]+'color').textContent),
@@ -321,21 +403,59 @@ function DisplayTimeChart(){
 }
 
 function DisplayTechChart(){
+    if(curr_chart){ curr_chart.destroy(); }
+    chart_data = [];
+    let item_data = {}
 
+    tech_chart_config.data.labels = chart_category;
+
+    console.log(chart_category);
+
+    for(let item of course_data_dict){
+
+        item_data = {
+            label: item[0],
+            data: item[1],
+            backgroundColor: HwbToRgb(document.getElementById(item[0]+'color').textContent),
+            pointRadius: 5
+        }
+        chart_data.push(item_data);
+    }
+    tech_chart_config.data.datasets = chart_data;
+    curr_chart = new Chart(chart_canvas, tech_chart_config);
 }
 
 function DisplayLearnChart(){
+    if(curr_chart){ curr_chart.destroy(); }
+    chart_data = [];
+    let item_data = {}
 
+    tech_chart_config.data.labels = chart_category;
+
+    console.log(chart_category);
+
+    for(let item of course_data_dict){
+
+        item_data = {
+            label: item[0],
+            data: item[1],
+            backgroundColor: HwbToRgb(document.getElementById(item[0]+'color').textContent),
+            pointRadius: 5
+        }
+        chart_data.push(item_data);
+    }
+    tech_chart_config.data.datasets = chart_data;
+    curr_chart = new Chart(chart_canvas, tech_chart_config);
 }
 // #endregion
 
 // #region Support Functions
 // calculate a suitable colors (complete)
 function GetColor(index) {
-
-    let hwb_h = Math.floor(index / 3) * 40;
-    let hwb_w = index % 3 * 30;
-    let hwb_b = 60 - hwb_w;
+    
+    let hwb_h = index % 12 * 30;
+    let hwb_w = Math.floor(index / 3) * 30;
+    let hwb_b = 60 - hwb_w
 
     return `hwb(${hwb_h} ${hwb_b}% ${hwb_w}%)`;
 }
