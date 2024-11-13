@@ -6,4 +6,4 @@ dist/
 build/
 __Test__/
 TempFile/
-*.json
+Config/
