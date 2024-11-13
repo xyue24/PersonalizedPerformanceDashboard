@@ -6,5 +6,5 @@ dist/
 build/
 __Test__/
 TempFile/
-Config/
-.venv
+.venv/
+*.env

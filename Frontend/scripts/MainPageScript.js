@@ -7,7 +7,7 @@ Version:        v0.6.202411061
 
 // #region Instance Initial
 // database data
-const backend_url = 'http://127.0.0.1:5000';
+const backend_url = '/api';
 const upload_file_api = '/upload_files';
 const remove_course_api = '/remove_course';
 const get_course_list_api = '/get_course_list';
