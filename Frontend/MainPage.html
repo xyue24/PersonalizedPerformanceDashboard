@@ -2,7 +2,7 @@
 Name:           MainPage.html
 Description:    web page layout file
 Author:         Xiaoyue Zhang
-Version:        v0.4.202411041
+Version:        v0.4.202411061
 -->
 
 <!DOCTYPE html>
@@ -19,15 +19,15 @@ Version:        v0.4.202411041
     <div class="main_container">
         <!--panel for course selection-->
         <div class="course_panel">
-            <!--courses buttons-->
-            <div class="course_btn_container" id="course_btn_container">
-            </div>
             <!--setting buttons-->
             <div class="setting_btn_container" id="setting_btn_container">
                 <button class="setting_btn" id="clear_btn"   onclick="ClearSelection()">C</button>
                 <button class="setting_btn" id="remove_btn"  onclick="RemoveCourse()">-</button>
                 <button class="setting_btn" id="adding_btn"  onclick="AddCourse()">+</button>
                 <input type="file" id="file-input" multiple style="display: none;">
+            </div>
+            <!--courses buttons-->
+            <div class="course_btn_container" id="course_btn_container">
             </div>
         </div>
         <!--panel for Analysis Report-->

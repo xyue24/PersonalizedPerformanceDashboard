@@ -2,13 +2,13 @@
 Name:           MainPageScript.js
 Description:    Script file for the MainPage.html
 Author:         Xiaoyue Zhang
-Version:        v0.6.202411051
+Version:        v0.6.202411061
 */
 
 // #region Instance Initial
 // database data
 const backend_url = 'http://127.0.0.1:5000';
-const upload_file_api = '/upload_file';
+const upload_file_api = '/upload_files';
 const remove_course_api = '/remove_course';
 const get_course_list_api = '/get_course_list';
 const get_chart_data_api = '/get_chart_data';
@@ -26,7 +26,8 @@ let chart_type = 'time_chart';
 
 // chart config initial
 let curr_chart;
-let chart_category = [];
+let tech_chart_category = []
+let learn_chart_category = []
 let chart_data = [];
 const time_chart_config = {     // config of time chart
     type: 'scatter',
@@ -233,15 +234,17 @@ function ClickChartBtn(type){
     new_btn.classList.remove('chart_type_btn'); 
     new_btn.classList.add('clicked_chart_type_btn');
 
-    // set chart type
+    // set chart type nad update chart
     chart_type = type;
 
-    // update chart
+    ClearSelection();
+    GetCourseList();
+
     const data_send = {
         type: chart_type,
-        course_list: selected_courses_list
+        course_list: [course]
     };
-    GetChartData(JSON.stringify(data_send));
+    GetChartData(JSON.stringify(data_send));   
 }
 
 // upload file to server (complete)
@@ -255,15 +258,19 @@ function AddCourse(){
         const files = event.target.files; // get selected file
         if (files.length <= 0) { console.warn("AddCourseError: NoSelectedFile"); return; } // if no file exist, return
 
+        const form_data = new FormData();
+        for(let file of files){
+            form_data.append('files', file);
+        }
+        
         // send file to server
-        UploadFile(files);
+        UploadFile(form_data);
     };
 }
 
 // clear selection (complete)
 function ClearSelection(){
     for(let i = 0; i < selected_courses_list.length; i ++){
-        console.log('item: ' + selected_courses_list[i]);
         ClickCourseBtn(selected_courses_list[i]);
     }
     selected_courses_list = [];
@@ -295,25 +302,29 @@ function UploadFile(file){
 // remove selected courses (complete)
 function RemoveCourse(){
     // user confirm remove action
-    const user_confirmed = confirm("您确定要继续吗？");
+    const user_confirmed = confirm("Sure you want to delete the selected courses?");
     if( !user_confirmed ){ return; }
 
     // remove course from frontend list and store into remove list
     let remove_list = [];
     for(let i = 0; i < selected_courses_list.length; i ++){
-        if(selected_courses_list[i] != ''){
+        if(selected_courses_list[i] != ""){   
             remove_list.push(selected_courses_list[i]);
             course_data_dict.delete(selected_courses_list[i]);
         }
     }
 
-    ClearSelection()
-    
+    if(remove_list.length == 0){ return; }
+
+    const data_send = {
+        type: chart_type,
+        list: remove_list
+    }
     // send list to backend to delete course key
     fetch(backend_url+remove_course_api, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ list: remove_list }),
+        body: JSON.stringify(data_send),
     })
     .then(response => response.json())  // get response from server
     .then(data => {     // remove success
@@ -337,8 +348,12 @@ function GetChartData(data_string){
     .then(response => response.json())  // get response from server
     .then(data => {     // get success
         for(let item in data){
-            if(item == 'category'){ chart_category = data[item]; }
-            else { course_data_dict.set(item, data[item]); }
+            if(chart_type == "learn_chart" )
+                learn_chart_category = data['category']
+            else if(chart_type == "tech_chart")
+                tech_chart_category = data['category']
+            if(item == 'category'){ continue; }
+            course_data_dict.set(item, data[item]);
         }
         UpdateChart();
     })
@@ -367,12 +382,19 @@ function UpdateChart(){
 
 // get course list from server (complete)
 function GetCourseList(){
-
-    fetch(backend_url + get_course_list_api)
+    const data = {
+        type: chart_type
+    }
+    fetch(backend_url + get_course_list_api,{
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    })
     .then(response =>  response.json())
     .then(data => {     // get course name list
         // get list and refresh course btns
-        available_courses_list = data.sort((a, b) => b.localeCompare(a));
+        available_courses_list = data['list'].sort((a, b) => b.localeCompare(a));
+        ClearSelection();
         RefreshCourseBtn();
     })
     .catch(error => {   // get list fail
@@ -407,9 +429,7 @@ function DisplayTechChart(){
     chart_data = [];
     let item_data = {}
 
-    tech_chart_config.data.labels = chart_category;
-
-    console.log(chart_category);
+    tech_chart_config.data.labels = tech_chart_category;
 
     for(let item of course_data_dict){
 
@@ -430,9 +450,7 @@ function DisplayLearnChart(){
     chart_data = [];
     let item_data = {}
 
-    tech_chart_config.data.labels = chart_category;
-
-    console.log(chart_category);
+    learn_chart_config.data.labels = learn_chart_category;
 
     for(let item of course_data_dict){
 
@@ -444,8 +462,8 @@ function DisplayLearnChart(){
         }
         chart_data.push(item_data);
     }
-    tech_chart_config.data.datasets = chart_data;
-    curr_chart = new Chart(chart_canvas, tech_chart_config);
+    learn_chart_config.data.datasets = chart_data;
+    curr_chart = new Chart(chart_canvas, learn_chart_config);
 }
 // #endregion
 
