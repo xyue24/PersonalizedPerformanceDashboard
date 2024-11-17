@@ -1,7 +1,7 @@
     * dot larger
     * time as h, score as v
     * title for each chart
-9 statistical values
+    9 statistical values
         p-value
         Size of Dataset
         Standard Deviation (Score)
