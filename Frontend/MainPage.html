@@ -12,19 +12,30 @@ Version:        v0.4.202411061
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personalized Performance Dashboard</title>
     <link rel="stylesheet" href="CSS/MainPageStyle.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="scripts/MainPageScript.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>   <!-- Create Chart -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> <!-- Create PDF -->
+    <script src="/Frontend/scripts/UserBehaviorMgr.js"></script>    <!-- Component Manager -->
 </head>
 <body>
     <div class="main_container">
+        <div class="wait_panel" id="download_wait">
+            <div class="spinner"></div>
+            <p class="wait_text">Downloading PDF...</p>
+        </div>
         <!--panel for course selection-->
         <div class="course_panel">
             <!--setting buttons-->
             <div class="setting_btn_container" id="setting_btn_container">
-                <button class="setting_btn" id="clear_btn"   onclick="ClearSelection()">C</button>
-                <button class="setting_btn" id="remove_btn"  onclick="RemoveCourse()">-</button>
-                <button class="setting_btn" id="adding_btn"  onclick="AddCourse()">+</button>
+                <button class="setting_btn" id="create_btn"  onclick="ClickCreatePDF()">P</button>
+                <button class="setting_btn" id="clear_btn"   onclick="ClickClearBtn()">C</button>
+                <button class="setting_btn" id="remove_btn"  onclick="ClickRemoveBtn()">-</button>
+                <button class="setting_btn" id="adding_btn"  onclick="ClickUploadBtn()">+</button>
                 <input type="file" id="file-input" multiple style="display: none;">
+            </div>
+            <div class="wait_panel" id="course_btn_wait">
+                <div class="spinner"></div>
+                <p class="wait_text">Loading Course List...</p>
             </div>
             <!--courses buttons-->
             <div class="course_btn_container" id="course_btn_container">
@@ -32,23 +43,28 @@ Version:        v0.4.202411061
         </div>
         <!--panel for Analysis Report-->
         <div class="report_panel">
+
             <p class="report_title">Analysis Report</p>
             <!--chart type buttons-->
             <div class="chart_type_btn_container">
-                <button class="clicked_chart_type_btn" id="time_chart" onclick="ClickChartBtn('time_chart')">Score vs Time</button>
-                <button class="chart_type_btn" id="tech_chart" onclick="ClickChartBtn('tech_chart')">Techniques Adopted</button>
-                <button class="chart_type_btn" id="learn_chart"onclick="ClickChartBtn('learn_chart')">Learning Methods</button>
+                <button class="clicked_chart_type_btn" id="Exam_Data" onclick="ClickChartBtn('Exam_Data')">Score vs Time</button>
+                <button class="chart_type_btn" id="Tech_Data" onclick="ClickChartBtn('Tech_Data')">Techniques Adopted</button>
+                <button class="chart_type_btn" id="Learn_Data"onclick="ClickChartBtn('Learn_Data')">Learning Methods</button>
             </div>
             <!--chart relate value and canvas-->
-            <div class="chart_panel">
+            <div class="chart_panel" id="chart_panel">
                 <div class="canvas_container">
                     <canvas class="chart_canvas" id="chart_canvas"></canvas>
                 </div>
                 <!--chart relate value panel-->
-                <div class="chart_info_container">
-                    <div class="chart_info" id="time_chart_p-value">P-Value: 30</div>
+                <div class="chart_info_container", id="chart_info_container">
+                </div>
+                <div class="wait_panel" id="statis_info_wait">
+                    <div class="spinner"></div>
+                    <p class="wait_text">Loading Data...</p>
                 </div>
             </div>
+            
         </div>
     </div>
 </body>

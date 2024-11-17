@@ -1,22 +1,13 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-from dotenv import load_dotenv
-import firebase_admin
-from firebase_admin import credentials, firestore
-import InterfaceImplementation
+import InterfaceFunctions
 import os
-import json
 
-load_dotenv()
-
-cred = credentials.Certificate(json.loads(os.getenv('FIREBASE_ADMIN_SDK')))
-firebase_admin.initialize_app(cred)
-
-database = firestore.client()
-
+# Initial App
 app = Flask(__name__, static_folder='../Frontend', template_folder='../Frontend')
 CORS(app)
 
+#   Hosting Setting APIs
 @app.route('/')
 def serve_index():
     return send_from_directory(app.template_folder, 'MainPage.html')
@@ -27,30 +18,27 @@ def serve_static(path):
 
 #   Frontend APIs
 # route for file uploads
-@app.route('/api/upload_files', methods=['POST'])
-def upload_files():
-    msg, index = InterfaceImplementation.upload_files(database)
+@app.route('/api/upload_data', methods=['POST'])
+def upload_data():
+    msg, index = InterfaceFunctions.upload_data()
     return jsonify(msg), index
 
-@app.route('/api/remove_course', methods=['POST'])
-def remove_course():
-    msg, index = InterfaceImplementation.remove_course(database)
+@app.route('/api/delete_data', methods=['POST'])
+def delete_data():
+    msg, index = InterfaceFunctions.delete_data()
     return jsonify(msg), index
 
-@app.route('/api/get_course_list', methods=['POST'])
-def get_course_list():
-    msg, index = InterfaceImplementation.get_course_list(database)
+@app.route('/api/get_doc_list', methods=['POST'])
+def get_doc_list():
+    msg, index = InterfaceFunctions.get_doc_list()
     return jsonify(msg), index
 
-@app.route('/api/get_chart_data', methods=['POST'])
-def get_chart_data():
-    msg, index = InterfaceImplementation.get_chart_data(database)
+@app.route('/api/get_doc_data', methods=['POST'])
+def get_doc_data():
+    msg, index = InterfaceFunctions.get_doc_data()
     return jsonify(msg), index
-
-
 
 # Run the app
 if __name__ == '__main__':
-    InterfaceImplementation.initial(database)
     port = int(os.environ.get('PORT', 10000))
     app.run(host='0.0.0.0', port=port)
