@@ -6,6 +6,7 @@ let chart_type = 'Exam_Data';
 let category_data = {'Exam_Data': [], 'Tech_Data': [],'Learn_Data': []};
 let chart_data = {};
 let statis_data = {};
+let chart_dataset = [];
 // #endregion 
 // #region Communication APIs
 const backend_url = '/api';
@@ -23,12 +24,19 @@ let chart_canvas;
 let chart = []
 let curr_chart;
 // #endregion
+// #region Chart Plugins
+const stopDrawingPlugin = {
+    id: 'stopDrawing',
+    afterDraw: (chart, args, options) => {
+        DrawChartMean(chart);
+    }
+};
+// #endregion
 // #region Chart Config
 const time_chart_config = {     // config of time chart
     type: 'scatter',
-    data: chart,
+    data: chart_dataset,
     options: {
-        responsive: true,
         maintainAspectRatio: false,
         scales:{
             x: {
@@ -44,9 +52,9 @@ const time_chart_config = {     // config of time chart
                 title: { display: true, text: 'Score' },
                 grid: { display: true },
                 ticks: { stepSize: 5 }
-            }
+            }   
         },
-        elements: { point: { radius: 7 }},
+        elements: { point: { radius: 7 }, line: { zIndex: 0 }},
         animation: { duration: 0 },
         // reflect data label as x and y
         parsing: { xAxisKey: 'Time', yAxisKey: 'Score' },
@@ -60,15 +68,15 @@ const time_chart_config = {     // config of time chart
                 padding: { top: 0, bottom: 0 },
                 font: { size: 18, family: 'Arial, sans-serif', weight: 'bold', lineHeight: 1 },
                 color: '#000000'
-            }
-        }
-    }
+            },
+        },
+    },
+    plugins: [stopDrawingPlugin]
 }
 const tech_chart_config = {     // config of tech chart
     type: 'bar',
     data: chart,
     options: {
-        responsive: true,
         maintainAspectRatio: false,
         indexAxis: 'y',
         scales:{
@@ -83,7 +91,10 @@ const tech_chart_config = {     // config of tech chart
         },
         animation: { duration: 0 },
         plugins: {
-            legend: { display: false },
+            colors: {
+                forceOverride: true
+            },
+            legend: { display: false, onClick: null },
             title: {
                 display: true,
                 text: 'Technologies Adopted',
@@ -100,7 +111,6 @@ const learn_chart_config = {    // config of learn chart
     type: 'bar',
     data: chart,
     options: {
-        responsive: true,
         maintainAspectRatio: false,
         indexAxis: 'y',
         scales:{
@@ -339,7 +349,7 @@ function UpdateChart(){
     if(curr_chart){ curr_chart.destroy(); }
 
     chart_canvas = document.getElementById('chart_canvas').getContext('2d'); 
-    chart = [];
+    chart_dataset = [];
 
     let item_data = {}
     for(let item in chart_data){
@@ -348,8 +358,9 @@ function UpdateChart(){
             // Correspond each y-value in the list to an x-value
             data: chart_data[item],
             backgroundColor: document.getElementById(item+'color').textContent,
+            zIndex: 1
         }
-        chart.push(item_data);
+        chart_dataset.push(item_data);
     }
 
     if(chart_type == 'Exam_Data'){
@@ -369,19 +380,19 @@ function UpdateChart(){
 }
 
 function DisplayTimeChart(chart_canvas){
-    time_chart_config.data.datasets = chart;
+    time_chart_config.data.datasets = chart_dataset;
     curr_chart = new Chart(chart_canvas, time_chart_config);
 }
 
 function DisplayTechChart(chart_canvas){
     tech_chart_config.data.labels = category_data[chart_type];
-    tech_chart_config.data.datasets = chart;
+    tech_chart_config.data.datasets = chart_dataset;
     curr_chart = new Chart(chart_canvas, tech_chart_config);
 }
 
 function DisplayLearnChart(chart_canvas){
     learn_chart_config.data.labels = category_data[chart_type];
-    learn_chart_config.data.datasets = chart;
+    learn_chart_config.data.datasets = chart_dataset;
     curr_chart = new Chart(chart_canvas, learn_chart_config);
 }
 
@@ -398,6 +409,40 @@ function DisplayStatis(){
         new_box.className = 'chart_info';                   // set button class
         new_box.textContent = key+" : "+statis_data[key];               // set button text                      
     }
+}
+
+function DrawChartMean(curr_chart){
+    console.log("Draw");
+    const ctx = curr_chart.ctx;
+    if(ctx == undefined){ return; }
+    const x_scale = curr_chart.scales.x;
+    const y_scale = curr_chart.scales.y;
+
+    // Line style
+    ctx.save();
+    ctx.setLineDash([5, 5]); // set line style（ length，interval）
+    ctx.strokeStyle = '#757575'; // set color
+    ctx.lineWidth = 1;       // set width
+
+    // Convert statis into pix pos
+    let x_pixel = x_scale.getPixelForValue(0);
+    let y_pixel = y_scale.getPixelForValue(0);
+    if('Time Mean' in statis_data){ x_pixel = x_scale.getPixelForValue(statis_data['Time Mean']); }
+    if('Score Mean' in statis_data){ y_pixel = y_scale.getPixelForValue(statis_data['Score Mean']); }
+
+    // draw vertical-line
+    ctx.beginPath();
+    ctx.moveTo(x_pixel, y_scale.top);
+    ctx.lineTo(x_pixel, y_scale.bottom);
+    ctx.stroke();
+
+    //  draw herizonal-line
+    ctx.beginPath();
+    ctx.moveTo(x_scale.left, y_pixel);
+    ctx.lineTo(x_scale.right, y_pixel);
+    ctx.stroke();
+
+    ctx.restore();
 }
 // #endregion
 
@@ -553,18 +598,17 @@ function CreatePDF(){
     // get text from statis component
     let statis_text = []
     for(let item of statis){
-        console.log(item);
         statis_text.push(item.textContent);
     }
 
     console.log(statis_text);
     
-    let y_pos = 200;
-    let x_pos = 30;
-    let y_gap = 20;
-    let x_gap = 80;
+    let y_pos = 150;
+    let y_gap = 10;
+    let x_pos = 20;
+    let x_gap = 60;
     for(let i = 0; i < statis_text.length; i ++){
-        pdf.text(statis_text[i], x_pos+x_gap*Math.floor(i/5), y_pos+y_gap*(i%5));
+        pdf.text(statis_text[statis_text.length - 1 - i], x_pos+x_gap*Math.floor(i/4), y_pos+y_gap*(i%4));
     }
 
     // adjust component
@@ -583,7 +627,7 @@ function CreatePDF(){
     UpdateChart();
 
     // add into pdf
-    pdf.addImage(chart_img, "PNG", 10, 10, 180, 160);
+    pdf.addImage(chart_img, "PNG", 10, 10, 180, 120);
 
     // start downloading
     pdf.save(chart_type+" Report.pdf");

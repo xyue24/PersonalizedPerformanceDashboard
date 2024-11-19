@@ -27,10 +27,18 @@ Version:        v0.4.202411061
         <div class="course_panel">
             <!--setting buttons-->
             <div class="setting_btn_container" id="setting_btn_container">
-                <button class="setting_btn" id="create_btn"  onclick="ClickCreatePDF()">P</button>
-                <button class="setting_btn" id="clear_btn"   onclick="ClickClearBtn()">C</button>
-                <button class="setting_btn" id="remove_btn"  onclick="ClickRemoveBtn()">-</button>
-                <button class="setting_btn" id="adding_btn"  onclick="ClickUploadBtn()">+</button>
+                <button class="setting_btn" id="create_btn"  onclick="ClickCreatePDF()">
+                    <img src="/ArtSrc/PDFIcon.PNG" alt="PNG" class="setting_btn_icon"></img>
+                </button>
+                <button class="setting_btn" id="clear_btn"   onclick="ClickClearBtn()">
+                    <img src="/ArtSrc/ClearIcon.PNG" alt="PNG" class="setting_btn_icon"></img>
+                </button>
+                <button class="setting_btn" id="remove_btn"  onclick="ClickRemoveBtn()">
+                    <img src="/ArtSrc/RemoveIcon.PNG" alt="PNG" class="setting_btn_icon"></img>
+                </button>
+                <button class="setting_btn" id="adding_btn"  onclick="ClickUploadBtn()">
+                    <img src="/ArtSrc/AddIcon.PNG" alt="PNG" class="setting_btn_icon"></img>
+                </button>
                 <input type="file" id="file-input" multiple style="display: none;">
             </div>
             <div class="wait_panel" id="course_btn_wait">

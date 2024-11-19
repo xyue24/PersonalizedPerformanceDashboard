@@ -176,5 +176,27 @@ def get_statis_value(collection_id, statis_data):
     container['Correlation'], container['P-Value'] = pearsonr(statis_data['Score'], statis_data['Time'])
     container['Correlation'] = round(float(container['Correlation']), 2)
     container['P-Value'] = round(float(container['P-Value']), 2)
-    # need Q1 ~ Q4
+    container['Score Mean'] = round(float(sum(statis_data['Score']) / container['Data Size']), 2)
+    container['Time Mean'] = round(float(sum(statis_data['Time']) / container['Data Size']), 2)
+    # Quadrants Count
+    quadrants_count = [0, 0, 0, 0]
+    for i in range(container['Data Size']-1):
+        # Q1: x >= mean, y >= mean
+        if statis_data['Time'][i] >= container['Time Mean'] and statis_data['Score'][i] >= container['Score Mean']:
+            quadrants_count[0] += 1
+        # Q2: x < mean, y >= mean
+        elif statis_data['Time'][i] < container['Time Mean'] and statis_data['Score'][i] >= container['Score Mean']:
+            quadrants_count[1] += 1
+        # Q3: x < mean, y < mean
+        elif statis_data['Time'][i] < container['Time Mean'] and statis_data['Score'][i] < container['Score Mean']:
+            quadrants_count[2] += 1
+        # Q3: x >= mean, y < mean
+        else:
+            quadrants_count[3] += 1
+    # Quadrants Calculate
+    container['Q1'] = f'{(round(float(quadrants_count[0] * 100 / container['Data Size']), 2))}%'
+    container['Q2'] = f'{(round(float(quadrants_count[1] * 100 / container['Data Size']), 2))}%'
+    container['Q3'] = f'{(round(float(quadrants_count[2] * 100 / container['Data Size']), 2))}%'
+    container['Q4'] = f'{(round(float(quadrants_count[3] * 100 / container['Data Size']), 2))}%'
+
     return container
