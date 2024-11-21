@@ -38,7 +38,16 @@ def get_doc_data():
     msg, index = InterfaceFunctions.get_doc_data()
     return jsonify(msg), index
 
+# Debug - check static folders
+@app.route('/debug/static-folders')
+def debug_static_folders():
+    output = f"Static Folder Path: {app.static_folder}\n"
+    output += "URL Map:\n"
+    for rule in app.url_map.iter_rules():
+        output += f"{rule}\n"
+    return f"<pre>{output}</pre>"
+
 # Run the app
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))
-    app.run(host='0.0.0.0', port=port)
+    app.run(host='0.0.0.0', port=port, debug=True)

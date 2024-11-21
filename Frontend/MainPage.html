@@ -11,7 +11,7 @@ Version:        v0.4.202411061
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Personalized Performance Dashboard</title>
-    <link rel="stylesheet" href="CSS/MainPageStyle.css">
+    <link rel="stylesheet" href="/Frontend/CSS/MainPageStyle.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>   <!-- Create Chart -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script> <!-- Create PDF -->
@@ -28,16 +28,16 @@ Version:        v0.4.202411061
             <!--setting buttons-->
             <div class="setting_btn_container" id="setting_btn_container">
                 <button class="setting_btn" id="create_btn"  onclick="ClickCreatePDF()">
-                    <img src="/ArtSrc/pdf_icon.PNG" alt="PNG" class="setting_btn_icon"></img>
+                    <img src="/Frontend/assets/pdf_icon.PNG" alt="PNG" class="setting_btn_icon"></img>
                 </button>
                 <button class="setting_btn" id="clear_btn"   onclick="ClickClearBtn()">
-                    <img src="/ArtSrc/clear_icon.PNG" alt="PNG" class="setting_btn_icon"></img>
+                    <img src="/Frontend/assets/clear_icon.PNG" alt="PNG" class="setting_btn_icon"></img>
                 </button>
                 <button class="setting_btn" id="remove_btn"  onclick="ClickRemoveBtn()">
-                    <img src="/ArtSrc/remove_icon.PNG" alt="PNG" class="setting_btn_icon"></img>
+                    <img src="/Frontend/assets/remove_icon.PNG" alt="PNG" class="setting_btn_icon"></img>
                 </button>
                 <button class="setting_btn" id="adding_btn"  onclick="ClickUploadBtn()">
-                    <img src="/ArtSrc/add_icon.PNG" alt="PNG" class="setting_btn_icon"></img>
+                    <img src="/Frontend/assets/add_icon.PNG" alt="PNG" class="setting_btn_icon"></img>
                 </button>
                 <input type="file" id="file-input" multiple style="display: none;">
             </div>
