@@ -41,21 +41,16 @@ def get_doc_data():
 # Debug - check static folders
 @app.route('/list-static-files', methods=['GET'])
 def list_static_files():
-    static_folder = app.static_folder  # 获取静态文件夹路径
+    static_folder = app.static_folder
     file_structure = {}
-
-    # 遍历静态文件夹
     for root, dirs, files in os.walk(static_folder):
         relative_path = os.path.relpath(root, static_folder)
         folder_name = relative_path if relative_path != '.' else 'root'
-        
-        # 保存文件夹和文件
         file_structure[folder_name] = {
             'folders': dirs,
             'files': files
         }
-
-    return jsonify(file_structure)  # 返回 JSON 格式的文件结构
+    return jsonify(file_structure)
 
 # Run the app
 if __name__ == '__main__':
