@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory, url_for
 from flask_cors import CORS
 import InterfaceFunctions
 import os
@@ -39,13 +39,23 @@ def get_doc_data():
     return jsonify(msg), index
 
 # Debug - check static folders
-@app.route('/debug/static-folders')
-def debug_static_folders():
-    output = f"Static Folder Path: {app.static_folder}\n"
-    output += "URL Map:\n"
-    for rule in app.url_map.iter_rules():
-        output += f"{rule}\n"
-    return f"<pre>{output}</pre>"
+@app.route('/list-static-files', methods=['GET'])
+def list_static_files():
+    static_folder = app.static_folder  # 获取静态文件夹路径
+    file_structure = {}
+
+    # 遍历静态文件夹
+    for root, dirs, files in os.walk(static_folder):
+        relative_path = os.path.relpath(root, static_folder)
+        folder_name = relative_path if relative_path != '.' else 'root'
+        
+        # 保存文件夹和文件
+        file_structure[folder_name] = {
+            'folders': dirs,
+            'files': files
+        }
+
+    return jsonify(file_structure)  # 返回 JSON 格式的文件结构
 
 # Run the app
 if __name__ == '__main__':
