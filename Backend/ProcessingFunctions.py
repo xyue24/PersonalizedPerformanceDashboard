@@ -6,6 +6,7 @@ from scipy.stats import pearsonr
 
 # Processing excel files, getting types and distributing them to different methods
 def upload_excel_files(file):
+
     # read each page name
     file_sheets = pd.ExcelFile(file).sheet_names     
     # read each sheet
@@ -19,7 +20,6 @@ def upload_excel_files(file):
         semester = data_frame['Semester'].dropna().iloc[0]
         year = str(int(data_frame['Year'].dropna().iloc[0]))
         doc_id = (course + semester + year).replace(" ", "")
-        print(doc_id)
         # distributing them to different funcs
         collection_name = ""
         doc_data = {}
@@ -35,7 +35,9 @@ def upload_excel_files(file):
         else:
             continue
         # store into database
-        database_manager.upload_doc(collection_name, doc_id, doc_data)
+        doc_list = get_doc_list(collection_name)
+        if doc_id not in doc_list:
+            database_manager.upload_doc(collection_name, doc_id, doc_data)
     return
 
 # parse exam score sheet into dict
@@ -59,10 +61,6 @@ def upload_tech_data(data_frame):
     data_frame = data_frame.dropna(subset=['Unnamed: 3'])
     course_data['Techniques Adopted'] = [item.strip() for item in data_frame['Techniques Adopted'].tolist()]
     course_data['Count'] = data_frame['Count'].tolist()
-    # update category
-    for item in course_data['Techniques Adopted']:
-        if item not in database_manager.category['Tech_Data']:
-            database_manager.update_category('Tech_Data', item)
     return course_data
 
 # parse learn sheet into dict
@@ -79,10 +77,6 @@ def upload_learn_data(data_frame):
     course_data['5'] = data_frame['Unnamed: 9'].astype(int).tolist()
     # formula score
     course_data['Formula'] = data_frame['Formula'].tolist()
-    # update category
-    for item in course_data['Learning_Method']:
-        if item not in database_manager.category['Learning_Method']:
-            database_manager.update_category('Learning_Method', item)
     return course_data
 
 def fetch_database_data(collection_id, doc_list):
@@ -91,11 +85,6 @@ def fetch_database_data(collection_id, doc_list):
     statis_data = database_manager.statis_data
     # remove useless data from temp local database
     database_manager.simplify_local_data(collection_id, doc_list)
-    # add category into container
-    chart_data['category'] = []
-    if collection_id != 'Exam_Data':
-        database_data = database_manager.fetch_doc(collection_id, 'category').to_dict()
-        chart_data['category'] = list(database_data.keys())
     # loop through required docs
     for doc in doc_list:
         # read and parse data from database
@@ -137,18 +126,15 @@ def fetch_exam_data(data, doc, chart_data, statis_data):
     return
 
 def fetch_tech_data(data, doc, chart_data):
-    category = database_manager.category['Tech_Data']
-    chart_data[doc] = [0] * len(category)
+    chart_data[doc] = {}
     for i in range(len(data['Count'])):
-        chart_data[doc][category[data['Techniques Adopted'][i].strip()]] = data['Count'][i]
-
+        chart_data[doc][data['Techniques Adopted'][i].strip()] = data['Count'][i]
     return
 
 def fetch_learn_data(data, doc, chart_data):
-    category = database_manager.category['Learn_Data']
-    chart_data[doc] = [0] * len(category)
+    chart_data[doc] = {}
     for i in range(len(data['Formula'])):
-        chart_data[doc][category[data['Learning_Method'][i].strip()]] = data['Formula'][i]
+        chart_data[doc][data['Learning_Method'][i].strip()] = data['Formula'][i]
     return
 
 # delete data from database
@@ -164,6 +150,7 @@ def get_doc_list(collection_id):
     doc_list = [name for name in doc_list if name != 'category']
     return doc_list
 
+# calculate all statis values
 def get_statis_value(collection_id, statis_data):
     # handle invalid input
     if collection_id != 'Exam_Data' or 'Time' not in statis_data:

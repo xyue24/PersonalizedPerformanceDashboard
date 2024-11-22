@@ -83,7 +83,7 @@ const tech_chart_config = {     // config of tech chart
             x: {
                 beginAtZero: true,
                 grid: { display: true },
-                title: { display: true, text: 'Number' },
+                title: { display: true, text: 'Number of time Technic is adopted' },
                 ticks: { stepSize: 5 },
                 stacked: true
             },
@@ -91,9 +91,6 @@ const tech_chart_config = {     // config of tech chart
         },
         animation: { duration: 0 },
         plugins: {
-            colors: {
-                forceOverride: true
-            },
             legend: { display: false, onClick: null },
             title: {
                 display: true,
@@ -412,7 +409,6 @@ function DisplayStatis(){
 }
 
 function DrawChartMean(curr_chart){
-    console.log("Draw");
     const ctx = curr_chart.ctx;
     if(ctx == undefined){ return; }
     const x_scale = curr_chart.scales.x;
@@ -452,7 +448,7 @@ function UploadData(file_list){
     // Upload files to database
     fetch(backend_url+upload_data_api, {
         method: 'POST',
-        body: file_list.filter(item => item != ""),
+        body: file_list
     })
     .then(response => response.json())  // get response from server
 
