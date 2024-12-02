@@ -29,6 +29,7 @@ const stopDrawingPlugin = {
     id: 'stopDrawing',
     afterDraw: (chart, args, options) => {
         DrawChartMean(chart);
+        DrawChartMid(chart);
     }
 };
 // #endregion
@@ -409,6 +410,43 @@ function DisplayStatis(){
 }
 
 function DrawChartMean(curr_chart){
+    console.log("draw 2");
+    const ctx  = curr_chart.ctx;
+    console.log(`ctx: ${ctx}`);
+    if(ctx == undefined){ return; }
+    const x_scale = curr_chart.scales.x;
+    const y_scale = curr_chart.scales.y;
+
+    // Line style
+    ctx.save();
+    ctx.setLineDash([5, 5]); // set line style（ length，interval）
+    ctx.strokeStyle = '#b9b9b9'; // set color
+    ctx.lineWidth = 1;          // set width
+
+    // Convert statis into pix pos
+    let x_pixel = x_scale.getPixelForValue(0);
+    let y_pixel = y_scale.getPixelForValue(0);
+    x_pixel = ( x_scale.left + x_scale.right ) / 2;
+    y_pixel = ( y_scale.top + y_scale.bottom )  / 2;
+
+    // draw vertical-line
+    ctx.beginPath();
+    ctx.moveTo(x_pixel, y_scale.top);
+    ctx.lineTo(x_pixel, y_scale.bottom);
+    ctx.stroke();
+
+    console.log(`hm: ${x_pixel}, l: ${x_scale.left}, r: ${x_scale.right}, vm: ${y_pixel}, t: ${y_scale.top}, b: ${y_scale.bottom}`);
+
+    //  draw herizonal-line
+    ctx.beginPath();
+    ctx.moveTo(x_scale.left, y_pixel);
+    ctx.lineTo(x_scale.right, y_pixel);
+    ctx.stroke();
+
+    ctx.restore();
+}
+
+function DrawChartMid(curr_chart){
     const ctx = curr_chart.ctx;
     if(ctx == undefined){ return; }
     const x_scale = curr_chart.scales.x;
