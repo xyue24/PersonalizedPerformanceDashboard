@@ -84,7 +84,7 @@ const tech_chart_config = {     // config of tech chart
             x: {
                 beginAtZero: true,
                 grid: { display: true },
-                title: { display: true, text: 'Number of time Technic is adopted' },
+                title: { display: true, text: 'Number of time Techniques is adopted' },
                 ticks: { stepSize: 5 },
                 stacked: true
             },
@@ -95,7 +95,7 @@ const tech_chart_config = {     // config of tech chart
             legend: { display: false, onClick: null },
             title: {
                 display: true,
-                text: 'Technologies Adopted',
+                text: 'Techniques Adopted',
                 position: 'top',  // 'top', 'left', 'bottom', 'right'
                 align: 'center',  // 'center', 'start', 'end'
                 padding: { top: 0, bottom: 0 },
