@@ -420,9 +420,7 @@ function DisplayStatis(){
 }
 
 function DrawChartMean(curr_chart){
-    console.log("draw 2");
     const ctx  = curr_chart.ctx;
-    console.log(`ctx: ${ctx}`);
     if(ctx == undefined){ return; }
     const x_scale = curr_chart.scales.x;
     const y_scale = curr_chart.scales.y;
@@ -444,8 +442,6 @@ function DrawChartMean(curr_chart){
     ctx.moveTo(x_pixel, y_scale.top);
     ctx.lineTo(x_pixel, y_scale.bottom);
     ctx.stroke();
-
-    console.log(`hm: ${x_pixel}, l: ${x_scale.left}, r: ${x_scale.right}, vm: ${y_pixel}, t: ${y_scale.top}, b: ${y_scale.bottom}`);
 
     //  draw herizonal-line
     ctx.beginPath();
@@ -601,13 +597,15 @@ function GetDocList(collection){
 // Generate a color (the index of color)
 function GetColor(index){
     // set function parameters
-    const color_zone = 12;     // devide all color into blocks
+    const color_zone = 6;     // devide all color into blocks
     const bright_zone = 3;     // pick number of color in each color zone
     const start_value = 60;    // color start from what brightness
     // generate a hwb color text
     const hwb_h = index % color_zone * (360 / color_zone);
-    const hwb_b = (Math.floor(index / bright_zone) * ( start_value / (bright_zone-1) )) / 100;
-    const hwb_w = (start_value - hwb_b) / 100
+    const hwb_b = (Math.floor(index / color_zone) * ( start_value / (bright_zone-1) )) / 100;
+    const hwb_w = (start_value / 100 - hwb_b);
+
+    console.log(`color: h(${hwb_h}), b(${hwb_b}), w(${hwb_w})`);
     // get info for converting
     const temp_c = 1 - hwb_w - hwb_b;
     const temp_x = temp_c * (1 - Math.abs((hwb_h / 60) % 2 - 1));

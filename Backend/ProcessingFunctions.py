@@ -109,10 +109,12 @@ def fetch_database_data(collection_id, doc_list):
 def fetch_exam_data(data, doc, chart_data, statis_data):
     # exclude outliers
     outlier = database_manager.outlier
-    for i in range(len(data['Time'])):
-        if data['Time'][i] > outlier:
+    size = len(data['Time'])
+    for i in range(size-1):
+        index = size-1-i
+        if data['Time'][index] > outlier:
             for key in data:
-                del data[key][i]
+                del data[key][index]
     # parse data into chart_data
     chart_data[doc] = []
     for i in range(len(data['Time'])):
