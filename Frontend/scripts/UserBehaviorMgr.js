@@ -7,6 +7,8 @@ let category_data = {'Exam_Data': [], 'Tech_Data': [],'Learn_Data': []};
 let chart_data = {};
 let statis_data = {};
 let chart_dataset = [];
+let admin = false;
+let admin_password = "admin_password";
 // #endregion 
 // #region Communication APIs
 const backend_url = '/api';
@@ -146,6 +148,10 @@ const learn_chart_config = {    // config of learn chart
 // #region User Behavior Functions
 // User click upload file button
 function ClickUploadBtn(){
+    // verify admin user
+    if(!admin){ AdminVerify(); }
+    if(!admin){ return; }
+
     const file_input = document.getElementById('file-input');
     file_input.click();
 
@@ -171,6 +177,10 @@ function ClickUploadBtn(){
 
 // User click remove course button
 function ClickRemoveBtn(){
+    // verify admin user
+    if(!admin){ AdminVerify(); }
+    if(!admin){ return; }
+
     // user confirm remove action
     const user_confirmed = confirm("Sure you want to delete the selected courses?");
     if( !user_confirmed ){ return; }
@@ -667,6 +677,16 @@ function CreatePDF(){
     pdf.save(chart_type+" Report.pdf");
 
     HideComponent('download_wait');
+}
+
+function AdminVerify(){
+    const user_input = prompt("Please input admin password: ", "password");
+    if(user_input == admin_password){
+        admin = true;
+    }
+    else{
+        confirm("Wrong Password");
+    }
 }
 
 // Initial Script

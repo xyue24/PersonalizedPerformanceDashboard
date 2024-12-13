@@ -38,20 +38,6 @@ def get_doc_data():
     msg, index = InterfaceFunctions.get_doc_data()
     return jsonify(msg), index
 
-# Debug - check static folders
-@app.route('/list-static-files', methods=['GET'])
-def list_static_files():
-    static_folder = app.static_folder
-    file_structure = {}
-    for root, dirs, files in os.walk(static_folder):
-        relative_path = os.path.relpath(root, static_folder)
-        folder_name = relative_path if relative_path != '.' else 'root'
-        file_structure[folder_name] = {
-            'folders': dirs,
-            'files': files
-        }
-    return jsonify(file_structure)
-
 # Run the app
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 10000))
