@@ -114,7 +114,6 @@ def fetch_exam_data(data, doc, chart_data, statis_data):
     for i in range(size):
         index = size-1-i
         if data['Time'][index] > outlier:
-            print(f'outlier found: ${data['Time'][index]}')
             for key in data:
                 del data[key][index]
     # parse data into chart_data
