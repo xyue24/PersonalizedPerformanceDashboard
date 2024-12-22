@@ -1,5 +1,6 @@
 import pandas as pd
 from LocalData import database_manager
+from collections import OrderedDict
 import statistics
 from scipy.stats import pearsonr
 
@@ -110,9 +111,10 @@ def fetch_exam_data(data, doc, chart_data, statis_data):
     # exclude outliers
     outlier = database_manager.outlier
     size = len(data['Time'])
-    for i in range(size-1):
+    for i in range(size):
         index = size-1-i
         if data['Time'][index] > outlier:
+            print(f'outlier found: ${data['Time'][index]}')
             for key in data:
                 del data[key][index]
     # parse data into chart_data
@@ -183,9 +185,9 @@ def get_statis_value(collection_id, statis_data):
         else:
             quadrants_count[3] += 1
     # Quadrants Calculate
-    container['Q1'] = f'{(round(float(quadrants_count[0] * 100 / container["Data Size"]), 2))}%'
-    container['Q2'] = f'{(round(float(quadrants_count[1] * 100 / container["Data Size"]), 2))}%'
-    container['Q3'] = f'{(round(float(quadrants_count[2] * 100 / container["Data Size"]), 2))}%'
-    container['Q4'] = f'{(round(float(quadrants_count[3] * 100 / container["Data Size"]), 2))}%'
+    container['Q2(Expected Behavior)'] = f'{(round(float(quadrants_count[0] * 100 / container["Data Size"]), 2))}%'
+    container['Q1(Genius)'] = f'{(round(float(quadrants_count[1] * 100 / container["Data Size"]), 2))}%'
+    container['Q3(Over-Confident)'] = f'{(round(float(quadrants_count[2] * 100 / container["Data Size"]), 2))}%'
+    container['Q4(Need External Help)'] = f'{(round(float(quadrants_count[3] * 100 / container["Data Size"]), 2))}%'
 
     return container

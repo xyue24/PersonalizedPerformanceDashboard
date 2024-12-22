@@ -330,6 +330,8 @@ html, body {
     min-height: 30px;
     width: 90%;
 
+    white-space: pre;
+
     padding-left: 8%;
     font-weight: bold;
     font-size: 13px;

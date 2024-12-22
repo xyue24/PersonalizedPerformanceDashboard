@@ -415,7 +415,14 @@ function DisplayStatis(){
         statis_container.appendChild(new_box);              // add into container
         new_box.id = key;                     // set button id
         new_box.className = 'chart_info';                   // set button class
-        new_box.textContent = key+" : "+statis_data[key];               // set button text                      
+        if(key == 'Q2(Expected Behavior)' ||key == 'Q1(Genius)' ||key == 'Q3(Over-Confident)' ||key == 'Q4(Need External Help)')
+        {
+            new_box.textContent = key+" : \n"+statis_data[key];
+        }
+        else
+        {
+            new_box.textContent = key+" : "+statis_data[key];               // set button text  
+        }            
     }
 }
 
@@ -605,7 +612,6 @@ function GetColor(index){
     const hwb_b = (Math.floor(index / color_zone) * ( start_value / (bright_zone-1) )) / 100;
     const hwb_w = (start_value / 100 - hwb_b);
 
-    console.log(`color: h(${hwb_h}), b(${hwb_b}), w(${hwb_w})`);
     // get info for converting
     const temp_c = 1 - hwb_w - hwb_b;
     const temp_x = temp_c * (1 - Math.abs((hwb_h / 60) % 2 - 1));
@@ -632,25 +638,29 @@ function GetColor(index){
 function CreatePDF(){
     // create file
     const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF();
+    const pdf = new jsPDF({
+        orientation: "landscape"
+    });
     // regist component
     const chart = document.getElementById("chart_canvas");
     const statis = document.getElementById("chart_info_container").querySelectorAll('div');
     
     // get text from statis component
-    let statis_text = []
-    for(let item of statis){
-        statis_text.push(item.textContent);
-    }
+    let y_pos = 22;
+    let y_gap = 15;
+    let x_pos = 245;
+    let i = 0;
+    for(const key in statis_data)
+    {
+        pdf.setFontSize(12);
+        pdf.setFont("Arial", "bold");
+        pdf.text(key+"\n", x_pos, y_pos+y_gap*(i));
 
-    console.log(statis_text);
-    
-    let y_pos = 150;
-    let y_gap = 10;
-    let x_pos = 20;
-    let x_gap = 60;
-    for(let i = 0; i < statis_text.length; i ++){
-        pdf.text(statis_text[statis_text.length - 1 - i], x_pos+x_gap*Math.floor(i/4), y_pos+y_gap*(i%4));
+        pdf.setFontSize(12);
+        pdf.setFont("Arial", "normal");
+        pdf.text(statis_data[key].toString(), x_pos, y_pos+y_gap*(i)+5);
+
+        i ++;
     }
 
     // adjust component
@@ -669,7 +679,14 @@ function CreatePDF(){
     UpdateChart();
 
     // add into pdf
-    pdf.addImage(chart_img, "PNG", 10, 10, 180, 120);
+    if(chart_type == 'Exam_Data')
+    {
+        pdf.addImage(chart_img, "PNG", 5, 20, 230, 155);
+    }
+    else
+    {
+        pdf.addImage(chart_img, "PNG", 5, 20, 290, 180);
+    }
 
     // start downloading
     pdf.save(chart_type+" Report.pdf");
