@@ -271,6 +271,27 @@ function ClickCreatePDF(){
     DisplayComponent('download_wait');
     CreatePDF();
 }
+
+// User click a download sample file button
+function ClickSampleBtn(){
+    const link = document.createElement('a');
+    link.href = "/Frontend/assets/SampleFile/ExampleExamScoreFile.xlsx";
+    link.download = 'ExampleExamScoreFile.xlsx';
+
+    if(chart_type == 'Tech_Data')
+    {
+        link.href = "/Frontend/assets/SampleFile/ExampleTechnologiesAdoptedFile.xlsx"
+        link.download = 'ExampleTechnologiesAdoptedFile.xlsx';
+    }
+    else if(chart_type == 'Learn_Data')
+    {
+        link.href = "/Frontend/assets/SampleFile/ExampleLearningMethodsFile.xlsx"
+        link.download = 'ExampleLearningMethodsFile.xlsx';
+    }
+
+    link.click();
+}
+
 // #endregion
 
 // #region General Action Groups

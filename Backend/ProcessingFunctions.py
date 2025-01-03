@@ -45,22 +45,18 @@ def upload_excel_files(file):
 def upload_exam_data(data_frame):
     course_data = {}
     # remove empty data
-    data_frame = data_frame.drop(columns=['Course_Number'], errors='ignore')
-    data_frame = data_frame.drop(columns=['Semester'], errors='ignore')
-    data_frame = data_frame.drop(columns=['Year'], errors='ignore')
     data_frame = data_frame.dropna(subset=['Score'])
     # parse required data
-    data_list = data_frame.columns.tolist()
-    for data in data_list:
-        course_data[data] = data_frame[data].tolist()
+    course_data['Time'] = data_frame['Time'].tolist()
+    course_data['Score'] = data_frame['Score'].tolist()
     return course_data
 
 # parse tech sheet into dict
 def upload_tech_data(data_frame):
     course_data = {}
     # remove useless data
-    data_frame = data_frame.dropna(subset=['Unnamed: 3'])
-    course_data['Techniques Adopted'] = [item.strip() for item in data_frame['Techniques Adopted'].tolist()]
+    data_frame = data_frame.dropna(subset=['Count'])
+    course_data['Techniques Adopted'] = data_frame['Techniques Adopted'].tolist()
     course_data['Count'] = data_frame['Count'].tolist()
     return course_data
 
@@ -68,14 +64,8 @@ def upload_tech_data(data_frame):
 def upload_learn_data(data_frame):
     course_data = {}
     # remove useless data
-    data_frame = data_frame.dropna(subset=['Unnamed: 3'])
-    course_data['Learning_Method'] = [item.strip() for item in data_frame['Learning_Method'].tolist()]
-    # effective value
-    course_data['1'] = data_frame['Results_of_Survey'].astype(int).tolist()
-    course_data['2'] = data_frame['Unnamed: 6'].astype(int).tolist()
-    course_data['3'] = data_frame['Unnamed: 7'].astype(int).tolist()
-    course_data['4'] = data_frame['Unnamed: 8'].astype(int).tolist()
-    course_data['5'] = data_frame['Unnamed: 9'].astype(int).tolist()
+    data_frame = data_frame.dropna(subset=['Formula'])
+    course_data['Learning_Method'] = data_frame['Learning_Method'].tolist()
     # formula score
     course_data['Formula'] = data_frame['Formula'].tolist()
     return course_data
